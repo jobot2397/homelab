@@ -1,0 +1,3 @@
+kube token K10e189e219c00533176da36751ac6e04c677a9029d6265067fa23a4f022cfdeb07::server:8a0e262261058a557deac1698857ecd1
+Add new node to cluster
+curl -sfL https://get.k3s.io | K3S_URL=https://192.168.100.21:6443 K3S_TOKEN=K10e189e219c00533176da36751ac6e04c677a9029d6265067fa23a4f022cfdeb07::server:8a0e262261058a557deac1698857ecd1 sh -

@@ -1,0 +1,8 @@
+Lightweight container hosting applications directly inside of through a container
+
+Pros:
+- Lightweight
+- Direct access to underlying hardware
+
+Cons:
+- Can get messy when trying to keep everything all up to date etc

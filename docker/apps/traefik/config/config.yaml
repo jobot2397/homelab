@@ -1,0 +1,109 @@
+http:
+  routers: # Map source to destination and add middleware
+    internal:
+      entryPoints: webSecure
+      rule: "Host(`*.local.jobot-services.com`)"
+      service: internal-service
+      middlewares:
+        - internal-secured
+      tls: {}
+    dashboard: # Traefik dashboard & generate certs for local services
+      entryPoints: webSecure
+      rule: "Host(`traefik.local.jobot-services.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      service: api@internal
+      middlewares:
+        - traefik-middlewares
+      tls: # Generate internal certs
+        certresolver: cloudflare
+        domains:
+          - main: "local.jobot-services.com"
+          - sans: "*.local.jobot-services.com"
+    external-certs:
+      entryPoints: webSecure
+      rule: "Host(`*.jobot-services.com`)"
+      service: external
+      middlewares:
+        - external-secured
+      tls: # Generate external certs
+        certresolver: cloudflare
+        domains:
+          - main: "jobot-services.com"
+          - sans: "*.jobot-services.com"
+    external:
+      entryPoints: webSecure
+      rule: "Host(`*.jobot-services.com`)"
+      service: external-service
+      middlewares:
+        - external-secured
+      tls: {}
+
+  services: # Destinations
+    internal-service:
+      loadBalancer:
+        servers:
+          - url: "http(s)://<IP_ADDRESS>"
+        passHostHeader: true
+    external-secured:
+      loadBalancer:
+        servers:
+          - url: "http(s)://<IP_ADDRESS>"
+        passHostHeader: true
+
+  middlewares: # Modify request
+    sslheader:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: https # Indicates original request was mode over HTTPS
+
+    traefik-auth:
+      # To create user:password pair, it's possible to use this command:
+      # echo $(htpasswd -nB user) | sed -e s/\\$/\\$\\$/g
+      basicAuth:
+        users:
+          - "username:<HASHED_PASSWORD>"
+
+    https-redirectscheme: # Redirect http to https
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    default-headers:
+      headers:
+        frameDeny: true # Prevents application from being embedded in an iframe
+        browserXssFilter: true # Enables built in cross site scripting filter
+        contentTypeNosniff: true # Prevents browsers from interpreting files in a format other than their MIME type
+        forceSTSHeader: true # Forces browser to communicate over HTTPS
+        stsIncludeSubdomains: true # Communicate on HTTPS over subdomains as well
+        stsPreload: true # Include site in browser HSTS list
+        stsSeconds: 15552000 # Duration to enforce HTTPS
+        customFrameOptionsValue: SAMEORIGIN # Allow website to be displayed as iframe if from same origin
+        customRequestHeaders:
+          X-Forwarded-Proto: https # Indicates original request was mode over HTTPS
+
+    internal-whitelist: # Local allow list
+      ipAllowList:
+        sourceRange:
+          - "10.0.0.0/8"
+          - "192.168.100.0/16"
+          - "172.16.0.0/12"
+
+    traefik-middlewares:
+      chain:
+        middlewares:
+          - internal-whitelist
+          - https-redirectscheme
+          - sslheader
+          - traefik-auth
+
+    internal-secured:
+      chain:
+        middlewares:
+          - internal-whitelist
+          - default-headers
+          - https-redirectscheme
+
+    external-secured:
+      chain:
+        middlewares:
+          - default-headers
+          - https-redirectscheme
