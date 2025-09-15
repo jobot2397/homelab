@@ -1,0 +1,47 @@
+## STATIC CONFIGURATION
+log:
+  level: TRACE
+
+api: # Traefik configs
+  insecure: false # Disable dashboard on 8080
+  dashboard: true # Enable dashboard
+
+entryPoints: # Sources: Listen to incoming traffic on 80 & 443
+  web: # HTTP
+    address: ":80"
+    http: # Redirect HTTP to HTTPS
+      redirections:
+        entryPoint:
+          to: webSecure
+          scheme: https
+  webSecure: # HTTPS
+    address: ":443"
+  ping: # Healthcheck endpoint
+    address: ":8082"
+
+# Healthcheck
+ping:
+  entryPoint: "ping"
+
+serversTransport: # Ignore self signed certs
+  insecureSkipVerify: true
+
+providers: # Where destinations are defined
+  file:
+    filename: /config.yml # Absolute path to config file in container
+    watch: true # Watch for updates of config.yml
+
+# certificatesResolvers: # Certificates for domains
+#   cloudflare:
+#     acme:
+#       email: joe-lawler-23@protonmail.com
+#       storage: acme.json
+#       # caServer: https://acme-v02.api.letsencrypt.org/directory # prod (default)
+#       caServer: https://acme-staging-v02.api.letsencrypt.org/directory # staging
+#       dnsChallenge:
+#         provider: cloudflare
+#         #disablePropagationCheck: true # uncomment this if you have issues pulling certificates through cloudflare, By setting this flag to true disables the need to wait for the propagation of the TXT record to all authoritative name servers.
+#         #delayBeforeCheck: 60s # uncomment along with disablePropagationCheck if needed to ensure the TXT record is ready before verification is attempted
+#         resolvers:
+#           - "1.1.1.1:53"
+#           - "1.0.0.1:53"
