@@ -1,0 +1,27 @@
+services:
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: caddy:latest # Should pin for stability
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+      - "84:84"
+    volumes:
+      - ./conf:/etc/caddy
+      - ./site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    env_file:
+      - .env
+    environment:
+      - CLOUDFLARE_EMAIL=${CF_EMAIL}
+      - CLOUDFLARE_API_TOKEN=${CF_API_TOKEN}
+      - ACME_AGREE=true
+
+volumes:
+  caddy_data:
+  caddy_config:

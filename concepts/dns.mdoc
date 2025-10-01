@@ -6,3 +6,17 @@ slug: dns
 updatedDate: 2025-10-15
 author: Joseph Lawler
 ---
+
+DNS issues on local machine
+When setting up multiple dns servers for pihole in unifi the secondary server takes time for the config to propogate and my local machine instead of using one as the primary and then the other one as the secondary uses them interchangeably which means configs in pihole do not get propogated fast enough. Here is a local fix. Might need to figure out a better way from the unifi side
+
+Using systemd-resolved config (Permanent)
+sudo nano /etc/systemd/resolved.conf
+
+Add:
+[Resolve]
+DNS=192.168.100.12
+FallbackDNS=192.168.100.13
+
+Then restart
+sudo systemctl restart systemd-resolved

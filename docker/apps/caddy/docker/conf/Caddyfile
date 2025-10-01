@@ -1,0 +1,32 @@
+{
+    admin 0.0.0.0:84
+    log {
+        output stdout
+        format console
+        level DEBUG
+    }
+}
+
+*.jobot-services.com {
+        tls {
+                dns cloudflare {env.CF_API_TOKEN}
+                propagation_delay 2m
+                resolvers 1.1.1.1
+        }
+
+        @trueNAS host truenas.jobot-services.com
+        handle @trueNAS {
+                reverse_proxy fermi.homelab:80
+        }
+
+        @curie host curie.jobot-services.com
+        handle @curie {
+                handle {
+                        reverse_proxy https://curie.homelab:8006 {
+                                transport http {
+                                        tls_insecure_skip_verify
+                                }
+                        }
+                }
+        }
+}

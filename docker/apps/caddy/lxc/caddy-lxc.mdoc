@@ -1,0 +1,336 @@
+---
+name: Caddy LXC
+title: Caddy LXC
+description: Caddy LXC installation
+slug: caddy-lxc
+updatedDate: 2025-10-29
+author: Joseph Lawler
+---
+
+# Complete Caddy + Cloudflare DNS Setup Guide
+
+This guide covers installing Caddy with Cloudflare DNS support on an LXC container from scratch.
+
+## Prerequisites
+
+- LXC container with Debian/Ubuntu
+- Root or sudo access
+- A domain managed by Cloudflare
+
+## Step 1: Get Your Cloudflare API Token
+
+1. Log into your [Cloudflare dashboard](https://dash.cloudflare.com)
+2. Go to **My Profile** → **API Tokens**
+3. Click **Create Token**
+4. Use the **Edit zone DNS** template
+5. Set permissions:
+   - **Zone - DNS - Edit**
+   - **Zone - Zone - Read**
+6. Set **Zone Resources** to include your domain(s)
+7. Create the token and **copy it** (you won't see it again)
+
+## Step 2: Install Prerequisites
+
+```bash
+sudo apt update
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl wget
+```
+
+## Step 3: Install Go
+
+```bash
+# Remove any old Go installation
+sudo rm -rf /usr/local/go
+
+# Download and install Go (check for latest version at https://go.dev/dl/)
+wget https://go.dev/dl/go1.23.1.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.23.1.linux-amd64.tar.gz
+rm go1.23.1.linux-amd64.tar.gz
+
+# Add Go to PATH
+echo 'export PATH=$PATH:/usr/local/go/bin' | sudo tee -a /etc/profile
+source /etc/profile
+
+# Verify installation
+go version
+```
+
+If `go version` doesn't work, open a new terminal session or run:
+```bash
+export PATH=$PATH:/usr/local/go/bin
+```
+
+## Step 4: Install xcaddy
+
+```bash
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/xcaddy/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-xcaddy-archive-keyring.gpg
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/xcaddy/config.deb.txt?distro=debian&codename=any-version' | sudo tee /etc/apt/sources.list.d/caddy-xcaddy.list
+sudo apt update
+sudo apt install xcaddy
+```
+
+> **Note:** You may see a message about "xcaddy needs to be updated manually after a caddy update" - this is normal and can be ignored for now.
+
+## Step 5: Build Caddy with Cloudflare Module
+
+```bash
+xcaddy build --with github.com/caddy-dns/cloudflare
+```
+
+## Step 6: Install the Custom Caddy Binary
+
+```bash
+sudo mv caddy /usr/bin/caddy
+sudo chown root:root /usr/bin/caddy
+sudo chmod 755 /usr/bin/caddy
+```
+
+## Step 7: Verify the Cloudflare Module
+
+```bash
+caddy list-modules | grep cloudflare
+```
+
+You should see: `dns.providers.cloudflare`
+
+## Step 8: Create Caddy User and Directories
+
+```bash
+sudo groupadd --system caddy
+sudo useradd --system --gid caddy --create-home --home-dir /var/lib/caddy --shell /usr/sbin/nologin caddy
+sudo mkdir -p /etc/caddy
+sudo mkdir -p /var/log/caddy
+sudo chown -R caddy:caddy /var/lib/caddy /var/log/caddy
+```
+
+## Step 9: Create Environment File
+
+```bash
+sudo nano /etc/caddy/caddy.env
+```
+
+Add your Cloudflare token (make sure to use `CLOUDFLARE_API_TOKEN`, not `CF_API_TOKEN`):
+
+```bash
+CLOUDFLARE_API_TOKEN=your_token_here
+```
+
+Save and exit (Ctrl+X, Y, Enter).
+
+Secure the file:
+
+```bash
+sudo chmod 600 /etc/caddy/caddy.env
+sudo chown root:root /etc/caddy/caddy.env
+```
+
+## Step 10: Create Caddyfile
+
+```bash
+sudo nano /etc/caddy/Caddyfile
+```
+
+Example configuration:
+
+```
+{
+    email your@email.com
+}
+
+example.com {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    respond "Hello from Caddy!"
+}
+
+# Add more domains as needed
+app.example.com {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    reverse_proxy localhost:3000
+}
+```
+
+Save and exit.
+
+Set proper permissions:
+
+```bash
+sudo chown caddy:caddy /etc/caddy/Caddyfile
+```
+
+## Step 11: Create Systemd Service
+
+```bash
+sudo nano /etc/systemd/system/caddy.service
+```
+
+Paste this configuration:
+
+```ini
+[Unit]
+Description=Caddy
+Documentation=https://caddyserver.com/docs/
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+Type=notify
+User=caddy
+Group=caddy
+ExecStart=/usr/bin/caddy run --environ --config /etc/caddy/Caddyfile
+ExecReload=/usr/bin/caddy reload --config /etc/caddy/Caddyfile --force
+TimeoutStopSec=5s
+LimitNOFILE=1048576
+LimitNPROC=512
+PrivateTmp=true
+ProtectSystem=full
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+EnvironmentFile=/etc/caddy/caddy.env
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Save and exit.
+
+## Step 12: Enable and Start Caddy
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable caddy
+sudo systemctl start caddy
+```
+
+## Step 13: Verify Installation
+
+Check service status:
+
+```bash
+sudo systemctl status caddy
+```
+
+Verify environment variable is loaded:
+
+```bash
+sudo systemctl show caddy | grep CLOUDFLARE
+```
+
+You should see:
+```
+Environment=CLOUDFLARE_API_TOKEN=your_token_here
+```
+
+View logs if needed:
+
+```bash
+sudo journalctl -u caddy -f
+```
+
+## Step 14: Configure DNS
+
+Make sure your domain's DNS records in Cloudflare point to your LXC container's IP address:
+
+- Add an A record pointing to your container's IP
+- Or use CNAME records as needed
+
+## Testing
+
+Test your Caddyfile configuration:
+
+```bash
+caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+```
+
+Visit your domain in a browser - it should automatically get a Let's Encrypt certificate via Cloudflare DNS challenge!
+
+## Troubleshooting
+
+### Certificate Errors
+
+- Verify your API token has the correct permissions in Cloudflare
+- Check that `CLOUDFLARE_API_TOKEN` is set correctly (not `CF_API_TOKEN`)
+- Verify the token is loaded: `sudo systemctl show caddy | grep CLOUDFLARE`
+- View detailed logs: `sudo journalctl -u caddy -n 100 --no-pager`
+
+### Environment Variable Not Loading
+
+If the environment variable isn't showing up:
+
+1. Verify the file exists: `sudo cat /etc/caddy/caddy.env`
+2. Check the service file: `sudo systemctl cat caddy | grep EnvironmentFile`
+3. Ensure proper permissions: `ls -la /etc/caddy/caddy.env`
+4. Restart after changes: `sudo systemctl daemon-reload && sudo systemctl restart caddy`
+
+### Reloading After Changes
+
+After modifying your Caddyfile:
+
+```bash
+sudo systemctl reload caddy
+```
+
+Or validate first:
+
+```bash
+caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+sudo systemctl reload caddy
+```
+
+## Updating Caddy
+
+When you need to update Caddy in the future:
+
+```bash
+# Update xcaddy
+sudo apt update
+sudo apt upgrade xcaddy
+
+# Rebuild Caddy
+xcaddy build --with github.com/caddy-dns/cloudflare
+
+# Replace binary
+sudo systemctl stop caddy
+sudo mv caddy /usr/bin/caddy
+sudo chown root:root /usr/bin/caddy
+sudo chmod 755 /usr/bin/caddy
+sudo systemctl start caddy
+```
+
+## Common Caddy Commands
+
+```bash
+# Check status
+sudo systemctl status caddy
+
+# Start/stop/restart
+sudo systemctl start caddy
+sudo systemctl stop caddy
+sudo systemctl restart caddy
+
+# Reload configuration
+sudo systemctl reload caddy
+
+# View logs
+sudo journalctl -u caddy -f
+
+# Validate Caddyfile
+caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+
+# List installed modules
+caddy list-modules
+```
+
+## Additional Resources
+
+- [Caddy Documentation](https://caddyserver.com/docs/)
+- [Cloudflare DNS Module](https://github.com/caddy-dns/cloudflare)
+- [Caddyfile Concepts](https://caddyserver.com/docs/caddyfile/concepts)
+
+---
+
+**Installation Complete!** Your Caddy server is now running with automatic HTTPS via Cloudflare DNS challenge.
