@@ -1,0 +1,81 @@
+services:
+  # Netbird Management
+  netbird_management:
+    image: netbirdio/management:latest
+    container_name: netbird_management
+    restart: unless-stopped
+    ports:
+      - "33073:80"
+    environment:
+      NETBIRD_MGMT_API_PORT: 443
+      NETBIRD_SIGNAL_PORT: 443
+      NETBIRD_MGMT_API_ENDPOINT: https://${NETBIRD_DOMAIN}
+      NETBIRD_MGMT_DATADIR: /var/lib/netbird
+      NETBIRD_MGMT_DNSDOMAIN: ${NETBIRD_DOMAIN}
+      NETBIRD_STORE_ENGINE_TYPE: sqlite
+      NETBIRD_HTTP_API_ADDR: 0.0.0.0:80
+      NETBIRD_HTTP_API_AUTH_AUDIENCE: ${NETBIRD_AUTH_CLIENT_ID}
+      NETBIRD_HTTP_API_AUTH_ISSUER: https://${AUTHENTIK_DOMAIN}/application/o/netbird/
+      NETBIRD_HTTP_API_OIDC_CONFIG_ENDPOINT: https://${AUTHENTIK_DOMAIN}/application/o/netbird/.well-known/openid-configuration
+      NETBIRD_IDP_MGMT_CLIENT_ID: ${NETBIRD_AUTH_CLIENT_ID}
+      NETBIRD_IDP_MGMT_CLIENT_SECRET: ${NETBIRD_AUTH_CLIENT_SECRET}
+      NETBIRD_IDP_MGMT_GRANT_TYPE: client_credentials
+      NETBIRD_IDP_MGMT_TOKEN_ENDPOINT: https://${AUTHENTIK_DOMAIN}/application/o/netbird/token/
+      NETBIRD_IDP_MGMT_TYPE: none
+      NETBIRD_IDP_SIGN_KEY_REFRESH_ENABLED: "true"
+      NETBIRD_SIGNAL_PROTOCOL: https
+      NETBIRD_SIGNAL_URI: ${NETBIRD_DOMAIN}:443
+      NETBIRD_TURN_PASSWORD: ${TURN_PASSWORD}
+      NETBIRD_TURN_URI: turn:${NETBIRD_DOMAIN}:3479
+      NETBIRD_TURN_USER: netbird
+      NETBIRD_STUN_URI: stun:${NETBIRD_DOMAIN}:3478
+      NETBIRD_LOG_LEVEL: debug
+    volumes:
+      - netbird_management:/var/lib/netbird
+      - ./management.json:/etc/netbird/management.json
+
+  # Netbird Signal
+  netbird_signal:
+    image: netbirdio/signal:latest
+    container_name: netbird_signal
+    restart: unless-stopped
+    ports:
+      - "33074:80"
+    volumes:
+      - netbird_signal:/var/lib/netbird
+
+  # Netbird STUN/TURN (Coturn)
+  netbird_coturn:
+    image: coturn/coturn:latest
+    container_name: netbird_coturn
+    restart: unless-stopped
+    domainname: ${NETBIRD_DOMAIN}
+    volumes:
+      - ./turnserver.conf:/etc/coturn/turnserver.conf:ro
+    network_mode: host
+    command:
+      - -c
+      - /etc/coturn/turnserver.conf
+
+  # Netbird Dashboard
+  netbird_dashboard:
+    image: netbirdio/dashboard:latest
+    container_name: netbird_dashboard
+    restart: unless-stopped
+    ports:
+      - "33075:80"
+    environment:
+      NETBIRD_MGMT_API_ENDPOINT: https://${NETBIRD_DOMAIN}
+      NETBIRD_MGMT_GRPC_API_ENDPOINT: https://${NETBIRD_DOMAIN}
+      AUTH_AUDIENCE: ${NETBIRD_AUTH_CLIENT_ID}
+      AUTH_CLIENT_ID: ${NETBIRD_AUTH_CLIENT_ID}
+      AUTH_AUTHORITY: https://${AUTHENTIK_DOMAIN}/application/o/netbird/
+      USE_AUTH0: "false"
+      AUTH_SUPPORTED_SCOPES: "openid profile email offline_access api"
+      AUTH_REDIRECT_URI: /peers
+      AUTH_SILENT_REDIRECT_URI: /add-peers
+      NETBIRD_TOKEN_SOURCE: idToken
+
+volumes:
+  netbird_management:
+  netbird_signal:

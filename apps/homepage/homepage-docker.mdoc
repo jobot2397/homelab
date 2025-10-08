@@ -1,0 +1,35 @@
+---
+name: Homepage Docker
+title: Homepage Docker
+description: Homepage dashboard docker installation
+slug: homepage-docker
+updatedDate: 2025-10-06
+author: Joseph Lawler
+---
+
+https://gethomepage.dev/
+
+Homepage is a modern, fully static, fast, secure fully customizable application dashboard with integrations for over 100 services.
+
+## Setup
+
+1. Start the container:
+```bash
+docker compose up -d
+```
+
+2. Access the dashboard at `http://localhost:3000`
+
+3. Configure your services by editing files in the `config/` directory:
+   - `settings.yaml` - General settings
+   - `services.yaml` - Service definitions
+   - `widgets.yaml` - Dashboard widgets
+   - `bookmarks.yaml` - Quick links
+
+## Configuration
+
+Configuration files are stored in the `./config` directory and mounted to `/app/config` in the container.
+
+## Docker Integration
+
+The docker socket is mounted read-only to allow Homepage to display container status and stats. Remove this mount if not needed.

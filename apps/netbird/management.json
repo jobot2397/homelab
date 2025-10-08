@@ -1,0 +1,89 @@
+{
+  "Stuns": [
+    {
+      "Proto": "udp",
+      "URI": "stun:netbird.jobot-services.com:3478",
+      "Username": "",
+      "Password": ""
+    }
+  ],
+  "TURNConfig": {
+    "TimeBasedCredentials": false,
+    "CredentialsTTL": "0s",
+    "Secret": "",
+    "Turns": [
+      {
+        "Proto": "udp",
+        "URI": "turn:netbird.jobot-services.com:3479",
+        "Username": "netbird",
+        "Password": "PASSWORD"
+      }
+    ]
+  },
+  "Relay": null,
+  "Signal": {
+    "Proto": "https",
+    "URI": "netbird.jobot-services.com:443",
+    "Username": "",
+    "Password": ""
+  },
+  "Datadir": "/var/lib/netbird/",
+  "DataStoreEncryptionKey": "He568gw/D0efiIQUsaiAkjtMWu21uokD64YY3spt4yA=",
+  "HttpConfig": {
+    "LetsEncryptDomain": "",
+    "CertFile": "",
+    "CertKey": "",
+    "AuthAudience": "ag4Y3BeKMTmeXoYazX76YEVuqXO6gb9TjougzCsH",
+    "AuthIssuer": "https://authentik.jobot-services.com/application/o/netbird/",
+    "AuthUserIDClaim": "",
+    "AuthKeysLocation": "https://authentik.jobot-services.com/application/o/netbird/jwks/",
+    "OIDCConfigEndpoint": "https://authentik.jobot-services.com/application/o/netbird/.well-known/openid-configuration",
+    "IdpSignKeyRefreshEnabled": false,
+    "ExtraAuthAudience": ""
+  },
+  "IdpManagerConfig": {
+    "ManagerType": "none",
+    "ClientConfig": {
+      "Issuer": "https://authentik.jobot-services.com/application/o/netbird",
+      "TokenEndpoint": "https://authentik.jobot-services.com/application/o/netbird/token/",
+      "ClientID": "ag4Y3BeKMTmeXoYazX76YEVuqXO6gb9TjougzCsH",
+      "ClientSecret": "B0srZ5YSfog1Qz6TZm51YM80LmZE70FXjfGbln1VhLxrUiyW3pzpRGjIcOrY3Mzw7EJ1eqwNh6SFdkhUXyVzY3QeBD9yQ1rrXrINl5s62NFKc5bmyh5UTOb4TUJwYIx3",
+      "GrantType": "client_credentials"
+    },
+    "ExtraConfig": null,
+    "Auth0ClientCredentials": null,
+    "AzureClientCredentials": null,
+    "KeycloakClientCredentials": null,
+    "ZitadelClientCredentials": null
+  },
+  "DeviceAuthorizationFlow": {
+    "Provider": "none",
+    "ProviderConfig": {
+      "ClientID": "ag4Y3BeKMTmeXoYazX76YEVuqXO6gb9TjougzCsH",
+      "ClientSecret": "B0srZ5YSfog1Qz6TZm51YM80LmZE70FXjfGbln1VhLxrUiyW3pzpRGjIcOrY3Mzw7EJ1eqwNh6SFdkhUXyVzY3QeBD9yQ1rrXrINl5s62NFKc5bmyh5UTOb4TUJwYIx3",
+      "Domain": "",
+      "Audience": "ag4Y3BeKMTmeXoYazX76YEVuqXO6gb9TjougzCsH",
+      "TokenEndpoint": "https://authentik.jobot-services.com/application/o/netbird/token/",
+      "DeviceAuthEndpoint": "https://authentik.jobot-services.com/application/o/netbird/device/authorize/",
+      "AuthorizationEndpoint": "https://authentik.jobot-services.com/application/o/netbird/authorize/",
+      "Scope": "openid email profile offline_access api",
+      "UseIDToken": false,
+      "RedirectURLs": [
+        "https://netbird.jobot-services.com/auth",
+        "https://netbird.jobot-services.com/silent-auth"
+      ],
+      "DisablePromptLogin": false,
+      "LoginFlag": 0
+    }
+  },
+  "PKCEAuthorizationFlow": null,
+  "StoreConfig": {
+    "Engine": "sqlite"
+  },
+  "ReverseProxy": {
+    "TrustedHTTPProxies": null,
+    "TrustedHTTPProxiesCount": 0,
+    "TrustedPeers": null
+  },
+  "DisableDefaultPolicy": false
+}
