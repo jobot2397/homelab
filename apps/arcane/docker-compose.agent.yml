@@ -1,0 +1,10 @@
+services:
+  arcane-agent:
+    image: ghcr.io/ofkm/arcane:latest
+    container_name: arcane-agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - AGENT_MODE=true
+      - SERVER_URL=http://arcane-server:3552
+    restart: unless-stopped

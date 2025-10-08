@@ -1,0 +1,18 @@
+services:
+  lldap:
+    container_name: lldap
+    image: lldap/lldap:stable
+    ports:
+      - "3890:3890"
+      - "6360:6360"
+      - "17170:17170"
+    volumes:
+      - lldap_data:/data
+    environment:
+      - LLDAP_LDAP_BASE_DN=dc=jobot-services,dc=com
+      - LLDAP_LDAP_USER_DN=admin
+    env_file:
+      - .env
+
+volumes:
+  lldap_data:

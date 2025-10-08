@@ -3,13 +3,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    # image: caddy:latest # Should pin for stability
     restart: unless-stopped
+    network_mode: host
+    container_name: caddy
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
-      - "84:84"
+      - "2019:2019"
     volumes:
       - ./conf:/etc/caddy
       - ./site:/srv
