@@ -2,7 +2,7 @@
 server:
   host: "0.0.0.0"
   port: 3000
-  cookie_secret: "HB22kSX7FYcwkOTv+lfhy1zG4ocJsqkg" # openssl rand -base64 24
+  cookie_secret: "COOKIE_SECRET" # openssl rand -base64 30
   cookie_secure: true
 
 # Headscale integration
@@ -27,20 +27,23 @@ integration:
 
   kubernetes:
     enabled: false
+    pod_name: "headscale"
+    validate_manifest: true
 
   proc:
     enabled: false
 
 # OIDC authentication (Authentik)
 oidc:
-  issuer: "https://auth.jobot-services.com/application/o/headplane/"
-  client_id: "your-headplane-client-id"
-  client_secret: "your-headplane-client-secret"
+  issuer: "https://authentik.jobot-services.com/application/o/headscale/"
+  client_id: "your-headscale-client-id"
+  client_secret: "your-headscale-client-secret"
 
   # Must match Headscale client_id for user subject consistency
+  # Generate by running docker exec -it headscale \headscale apikeys create
   headscale_api_key: "your-headscale-api-key"
 
-  redirect_uri: "https://headplane.jobot-services.com/admin/oidc/callback"
+  redirect_uri: "https://headscale.jobot-services.com/admin/oidc/callback"
   disable_api_key_login: false
   token_endpoint_auth_method: "client_secret_post"
   user_storage_file: "/var/lib/headplane/users.json"

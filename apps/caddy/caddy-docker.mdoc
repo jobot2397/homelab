@@ -7,8 +7,35 @@ updatedDate: 2025-10-29
 author: Joseph Lawler
 ---
 
-https://caddyserver.com/
+[Caddy](https://caddyserver.com/)
 
+# Installation Methods:
+
+Caddy out of the box is bare bones and all plugins must be compiled via xcaddy
+
+## No Plugins
+
+Straight forward, run the docker compose file and create a caddyfile and boom you're ready to go with a dead simple reverse proxy. It can even support tls certificates and renewals.
+
+## Prerequisites
+- Docker
+- Docker Compose
+
+## Installation
+
+1. Copy docker compose file (show compose file)
+2. Create an empty file titled Caddyfile, no extension at the root directory (show file structure)
+3. Create a basic reverse proxy
+4. Run docker compose (show compose file)
+5. Test route
+
+## Plugins
+
+Add the repository link for the plugins you want to the docker file and update the caddyfile to support the new additions and everything "should" be functional
+
+
+
+# Notes
 Start out with caddy as it's own docker container
 
 Using docker for local testing

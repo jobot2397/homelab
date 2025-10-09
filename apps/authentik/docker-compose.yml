@@ -1,11 +1,12 @@
 services:
   postgresql:
+    container_name: authentik-postgresql
     env_file:
       - .env
     environment:
-      POSTGRES_DB: ${PG_DB:-authentik}
-      POSTGRES_PASSWORD: ${PG_PASS:?database password required}
-      POSTGRES_USER: ${PG_USER:-authentik}
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_USER: ${PG_USER}
     healthcheck:
       interval: 30s
       retries: 5
@@ -16,9 +17,12 @@ services:
       timeout: 5s
     image: docker.io/library/postgres:16-alpine
     restart: unless-stopped
+    networks:
+      - authentik-internal
     volumes:
       - database:/var/lib/postgresql/data
   redis:
+    container_name: authentik-redis
     command: --save 60 1 --loglevel warning
     healthcheck:
       interval: 30s
@@ -30,9 +34,12 @@ services:
       timeout: 3s
     image: docker.io/library/redis:alpine
     restart: unless-stopped
+    networks:
+      - authentik-internal
     volumes:
       - redis:/data
   server:
+    container_name: authentik-server
     command: server
     depends_on:
       postgresql:
@@ -43,20 +50,23 @@ services:
       - .env
     environment:
       AUTHENTIK_POSTGRESQL__HOST: postgresql
-      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER}
       AUTHENTIK_REDIS__HOST: redis
-      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.8.4}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    image: ghcr.io/goauthentik/server:2025.8.4
     ports:
-      - ${COMPOSE_PORT_HTTP:-9000}:9000
-      - ${COMPOSE_PORT_HTTPS:-9443}:9443
+      - ${COMPOSE_PORT_HTTP}:9000
+      - ${COMPOSE_PORT_HTTPS}:9443
     restart: unless-stopped
+    networks:
+      - authentik-internal
     volumes:
-      - ./media:/media
-      - ./custom-templates:/templates
+      - media:/media
+      - custom-templates:/templates
   worker:
+    container_name: authentik-worker
     command: worker
     depends_on:
       postgresql:
@@ -67,21 +77,34 @@ services:
       - .env
     environment:
       AUTHENTIK_POSTGRESQL__HOST: postgresql
-      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER}
       AUTHENTIK_REDIS__HOST: redis
-      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.8.4}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    image: ghcr.io/goauthentik/server:2025.8.4
     restart: unless-stopped
     user: root
+    networks:
+      - authentik-internal
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./media:/media
-      - ./certs:/certs
-      - ./custom-templates:/templates
+      - media:/media
+      - certs:/certs
+      - custom-templates:/templates
+
+networks:
+  authentik-internal:
+    driver: bridge
+
 volumes:
   database:
     driver: local
   redis:
+    driver: local
+  media:
+    driver: local
+  certs:
+    driver: local
+  custom-templates:
     driver: local

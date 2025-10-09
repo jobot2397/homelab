@@ -1,0 +1,34 @@
+{
+    admin 0.0.0.0:2019
+    log {
+        output stdout
+        format console
+        level DEBUG
+    }
+}
+
+jobot-services.com, *.jobot-services.com {
+        tls /cloudflare/origin.pem /cloudflare/origin.key
+
+        @authentik host authentik.jobot-services.com auth.jobot-services.com
+        handle @authentik {
+            reverse_proxy localhost:9000 {
+                header_up X-Forwarded-Proto {scheme}
+                header_up X-Forwarded-For {remote_host}
+                header_up Host {host}
+            }
+        }
+
+        @headscale host headscale.jobot-services.com
+        handle @headscale {
+            # Route /admin and /admin/* to Headplane
+            handle /admin* {
+                reverse_proxy localhost:3000
+            }
+
+            # Route everything else to Headscale
+            handle * {
+                reverse_proxy localhost:8080
+            }
+        }
+}

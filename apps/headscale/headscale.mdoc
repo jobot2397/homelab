@@ -7,6 +7,25 @@ updatedDate: 2025-10-05
 author: Joseph Lawler
 ---
 
-Reverse Proxy 
+Create OIDC in authentik (https://integrations.goauthentik.io/networking/headscale/)
 
-Now this is a weird case where we want both of these 
+Populate client-id, client-secret
+
+Make sure that the allowed_domains includes your email domain if you are using this
+
+Generate COOKIE_SECRET for headplane
+
+Bring up headscale
+
+Generate API key for headplane (docker exec -it headscale \headscale apikeys create)
+
+Bring up headplane
+
+http://localhost:3000/admin
+
+Reverse proxy config (Reference caddy file)
+
+https://headscale.jobot-services.com/admin
+
+Setup clients (https://headscale.net/stable/usage/connect/apple/#configuring-the-headscale-url)
+tailscale login --login-server https://headscale.jobot-services.com

@@ -1,17 +1,26 @@
 services:
   caddy:
-    image: caddy:latest # Should pin for stability
+    image: caddy:2.9-alpine
     restart: unless-stopped
     network_mode: host
     container_name: caddy
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-      - "2019:2019"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:2019/config/",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     volumes:
-      - ./conf:/etc/caddy
-      - ./site:/srv
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # - ./site:/srv
       - caddy_data:/data
       - caddy_config:/config
       - ./cloudflare:/cloudflare
