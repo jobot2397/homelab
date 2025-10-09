@@ -29,4 +29,14 @@
                         }
                 }
         }
+
+        @headscale host headscale.jobot-services.com
+        handle @headscale {
+                reverse_proxy headscale:8080
+        }
+
+        @headplane host headplane.jobot-services.com
+        handle @headplane {
+                reverse_proxy headplane:3000
+        }
 }

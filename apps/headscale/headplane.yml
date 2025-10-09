@@ -1,0 +1,46 @@
+# Headplane server configuration
+server:
+  host: "0.0.0.0"
+  port: 3000
+  cookie_secret: "HB22kSX7FYcwkOTv+lfhy1zG4ocJsqkg" # openssl rand -base64 24
+  cookie_secure: true
+
+# Headscale integration
+headscale:
+  url: "http://headscale:8080"
+  # public_url: "https://headscale.jobot-services.com"
+  config_path: "/etc/headscale/config.yaml"
+  config_strict: true
+
+# Integration settings
+integration:
+  # Agent provides node info (version, OS, connectivity)
+  agent:
+    enabled: false
+    # pre_authkey: "your-preauth-key"
+
+  # Docker integration for signaling headscale on DNS changes
+  docker:
+    enabled: true
+    container_label: "me.tale.headplane.target=headscale"
+    socket: "unix:///var/run/docker.sock"
+
+  kubernetes:
+    enabled: false
+
+  proc:
+    enabled: false
+
+# OIDC authentication (Authentik)
+oidc:
+  issuer: "https://auth.jobot-services.com/application/o/headplane/"
+  client_id: "your-headplane-client-id"
+  client_secret: "your-headplane-client-secret"
+
+  # Must match Headscale client_id for user subject consistency
+  headscale_api_key: "your-headscale-api-key"
+
+  redirect_uri: "https://headplane.jobot-services.com/admin/oidc/callback"
+  disable_api_key_login: false
+  token_endpoint_auth_method: "client_secret_post"
+  user_storage_file: "/var/lib/headplane/users.json"

@@ -1,0 +1,31 @@
+services:
+  headscale:
+    image: headscale/headscale:0.23.0
+    container_name: headscale
+    restart: unless-stopped
+    command: serve
+    labels:
+      me.tale.headplane.target: headscale
+    ports:
+      - "8080:8080"
+    volumes:
+      - headscale_data:/var/lib/headscale
+      - ./headscale.yml:/etc/headscale/config.yaml:ro
+
+  headplane:
+    image: ghcr.io/tale/headplane:0.3.0
+    container_name: headplane
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./headplane.yml:/etc/headplane/config.yaml:ro
+      - ./headscale.yml:/etc/headscale/config.yaml:ro
+      - headplane_data:/var/lib/headplane
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - headscale
+
+volumes:
+  headscale_data:
+  headplane_data:
