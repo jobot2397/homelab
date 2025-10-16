@@ -8,27 +8,57 @@
 }
 
 jobot-services.com, *.jobot-services.com {
-        tls /cloudflare/origin.pem /cloudflare/origin.key
+    tls /cloudflare/origin.pem /cloudflare/origin.key
 
-        @authentik host authentik.jobot-services.com auth.jobot-services.com
-        handle @authentik {
-            reverse_proxy localhost:9000 {
-                header_up X-Forwarded-Proto {scheme}
-                header_up X-Forwarded-For {remote_host}
-                header_up Host {host}
+    @arcane host arcane.jobot-services.com
+    handle @arcane {
+        reverse_proxy localhost:3552 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-For {remote_host}
+            header_up Host {host}
+            transport http {
+                read_timeout 300s
+                write_timeout 300s
             }
         }
+    }
 
-        @headscale host headscale.jobot-services.com
-        handle @headscale {
-            # Route /admin and /admin/* to Headplane
-            handle /admin* {
-                reverse_proxy localhost:3000
-            }
+    @authentik host authentik.jobot-services.com auth.jobot-services.com
+    handle @authentik {
+        reverse_proxy localhost:9000 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-For {remote_host}
+            header_up Host {host}
+        }
+    }
 
-            # Route everything else to Headscale
-            handle * {
-                reverse_proxy localhost:8080
+    @beszel host beszel.jobot-services.com
+    handle @beszel {
+        request_body {
+            max_size 10MB
+        }
+        reverse_proxy localhost:8090 {
+            transport http {
+                read_timeout 360s
             }
         }
+    }
+
+    @headplane host headplane.jobot-services.com
+    handle @headplane {
+        redir https://headscale.jobot-services.com/admin permanent
+    }
+
+    @headscale host headscale.jobot-services.com
+    handle @headscale {
+        # Route /admin and /admin/* to Headplane
+        handle /admin* {
+            reverse_proxy localhost:3000
+        }
+
+        # Route everything else to Headscale
+        handle * {
+            reverse_proxy localhost:8080
+        }
+    }
 }

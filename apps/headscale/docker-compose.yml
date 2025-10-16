@@ -13,6 +13,20 @@ services:
     volumes:
       - headscale_data:/var/lib/headscale
       - ./headscale.yml:/etc/headscale/config.yaml:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   headplane:
     image: ghcr.io/tale/headplane:0.6.0
@@ -28,7 +42,22 @@ services:
       - headplane_data:/var/lib/headplane
       - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
-      - headscale
+      headscale:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000/",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   headscale-internal:

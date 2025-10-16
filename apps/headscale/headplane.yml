@@ -8,7 +8,7 @@ server:
 # Headscale integration
 headscale:
   url: "http://headscale:8080"
-  # public_url: "https://headscale.jobot-services.com"
+  public_url: "https://headscale.jobot-services.com"
   config_path: "/etc/headscale/config.yaml"
   config_strict: true
 
@@ -35,7 +35,7 @@ integration:
 
 # OIDC authentication (Authentik)
 oidc:
-  issuer: "https://authentik.jobot-services.com/application/o/headscale/"
+  issuer: "https://auth.jobot-services.com/application/o/headscale/"
   client_id: "your-headscale-client-id"
   client_secret: "your-headscale-client-secret"
 
