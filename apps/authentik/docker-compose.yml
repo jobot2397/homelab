@@ -65,6 +65,12 @@ services:
     volumes:
       - media:/media
       - custom-templates:/templates
+    labels:
+      - homepage.group=Hopper
+      - homepage.name=Authentik
+      - homepage.icon=sh-authentik.svg
+      - homepage.href=https://authentik.jobot-services.com/
+      - homepage.description=Identity provider and SSO
   worker:
     container_name: authentik-worker
     command: worker

@@ -6,3 +6,41 @@
 [2025-10-07T00:28:54.361Z] info: custom.css was copied to the config folder
 [2025-10-07T00:28:54.361Z] info: custom.js was copied to the config folder
 [2025-10-07T00:28:54.392Z] info: proxmox.yaml was copied to the config folder
+[2025-10-17T03:23:25.789Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.937Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.946Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.954Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.963Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.970Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.975Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.985Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.989Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.993Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:25.996Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:26.000Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:38.831Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:38.965Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:38.968Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:38.971Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:38.975Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:38.977Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:38.980Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:38.987Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:39.016Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:39.019Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:39.024Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:23:39.027Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.450Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.705Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.709Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.712Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.730Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.733Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.736Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.739Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.744Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.748Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.762Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:15.765Z] error: Host validation failed for: 100.64.0.2:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:28.151Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.
+[2025-10-17T03:25:28.156Z] error: Host validation failed for: localhost:3005. Hint: Set the HOMEPAGE_ALLOWED_HOSTS environment variable to allow requests from this host / port.

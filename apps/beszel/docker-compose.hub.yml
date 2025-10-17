@@ -15,6 +15,12 @@ services:
       interval: 120s # Then check every 120 seconds after that
     environment:
       - USER_CREATION=true
+    labels:
+      - homepage.group=Hopper
+      - homepage.name=Beszel
+      - homepage.icon=sh-beszel.svg
+      - homepage.href=https://beszel.jobot-services.com/
+      - homepage.description=System monitoring dashboard
 networks:
   beszel-internal:
     driver: bridge

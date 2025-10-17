@@ -1,0 +1,20 @@
+services:
+  uptime-kuma:
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:1
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime-kuma:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - homepage.group=Hopper
+      - homepage.name=Uptime Kuma
+      - homepage.icon=sh-uptime-kuma.svg
+      - homepage.href=https://uptime-kuma.jobot-services.com/
+      - homepage.description=Uptime monitor
+
+volumes:
+  uptime-kuma:
+    driver: local

@@ -30,6 +30,12 @@ services:
       start_period: 40s
     networks:
       - arcane-network
+    labels:
+      - homepage.group=Hopper
+      - homepage.name=Arcane
+      - homepage.icon=sh-arcane.svg
+      - homepage.href=https://arcane.jobot-services.com/
+      - homepage.description=Docker server management
 
   postgres:
     image: postgres:17-alpine

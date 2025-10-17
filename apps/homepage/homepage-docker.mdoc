@@ -33,3 +33,5 @@ Configuration files are stored in the `./config` directory and mounted to `/app/
 ## Docker Integration
 
 The docker socket is mounted read-only to allow Homepage to display container status and stats. Remove this mount if not needed.
+
+sudo chown -R $USER:$USER ./config
