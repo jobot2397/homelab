@@ -1,10 +1,18 @@
 services:
   arcane-agent:
-    image: ghcr.io/ofkm/arcane:latest
+    image: ghcr.io/ofkm/arcane-headless:latest
     container_name: arcane-agent
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "3553:3553"
     environment:
       - AGENT_MODE=true
-      - SERVER_URL=http://arcane-server:3552
+      # Use a strong, temporary bootstrap token for pairing:
+      - AGENT_BOOTSTRAP_TOKEN=TOKEN
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - agent-data:/app/data
+      - /home/jobot2397/containers:/compose-files:rw
     restart: unless-stopped
+
+volumes:
+  agent-data: {}
