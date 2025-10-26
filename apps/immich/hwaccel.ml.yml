@@ -1,0 +1,72 @@
+# Hardware acceleration configuration for Immich Machine Learning
+# Framework Desktop - AMD Radeon 8060S (ROCm)
+#
+# Requirements:
+# - At least 35GB of free disk space for ROCm
+# - AMD GPU drivers installed on host
+#
+# To use this configuration:
+# 1. Update docker-compose.ml.yml to use the image tag with '-rocm' suffix
+#    Example: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}-rocm
+# 2. Uncomment the extends section in docker-compose.ml.yml and set service to 'rocm'
+#
+# Monitor GPU usage with: radeontop
+
+services:
+  # ARM NN (Mali GPU acceleration)
+  armnn:
+    devices:
+      - /dev/mali0:/dev/mali0
+    volumes:
+      - /usr/lib/libmali.so:/usr/lib/libmali.so:ro
+
+  # NVIDIA CUDA acceleration
+  cuda:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities:
+                - gpu
+
+  # AMD ROCm acceleration (Framework Desktop with Radeon 8060S)
+  rocm:
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    group_add:
+      - video
+    environment:
+      # Specify which GPU to use (default: 0)
+      # For multiple GPUs, use MACHINE_LEARNING_DEVICE_IDS=0,1
+      - MACHINE_LEARNING_DEVICE_IDS=0
+      # Number of worker processes (increase for multiple GPUs)
+      - MACHINE_LEARNING_WORKERS=1
+    security_opt:
+      - seccomp:unconfined
+
+  # Intel OpenVINO acceleration (Iris Xe, Arc GPUs)
+  openvino:
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - video
+
+  # Intel OpenVINO acceleration (WSL2)
+  openvino-wsl:
+    devices:
+      - /dev/dxg:/dev/dxg
+    volumes:
+      - /usr/lib/wsl:/usr/lib/wsl
+    environment:
+      - LD_LIBRARY_PATH=/usr/lib/wsl/lib
+      - LIBVA_DRIVER_NAME=d3d12
+
+  # Rockchip RKNN acceleration (RK3566, RK3568, RK3576, RK3588)
+  rknn:
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - video
