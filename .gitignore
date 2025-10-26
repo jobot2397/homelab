@@ -2,3 +2,7 @@
 origin.key
 origin.pem
 .log
+
+# Golink
+golink-
+*.tar.gz
