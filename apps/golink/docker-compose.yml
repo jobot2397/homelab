@@ -1,0 +1,17 @@
+services:
+  golink:
+    build: .
+    container_name: golink
+    restart: unless-stopped
+    command:
+      - "./golink"
+      - "-sqlitedb"
+      - "/data/golink.db"
+      - "-verbose"
+      - "-control-url"
+      - "https://headscale.jobot-services.com"
+    volumes:
+      - golink_data:/data
+
+volumes:
+  golink_data:
