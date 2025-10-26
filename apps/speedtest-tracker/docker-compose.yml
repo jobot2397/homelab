@@ -1,0 +1,29 @@
+services:
+  speedtest-tracker:
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    restart: unless-stopped
+    container_name: speedtest-tracker
+    ports:
+      - 8080:80
+      - 8443:443
+    env_file:
+      - .env
+    volumes:
+      - speedtest-data:/config
+    depends_on:
+      - db
+  db:
+    image: postgres:17
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - speedtest-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
+volumes:
+  speedtest-db:
+  speedtest-data:
