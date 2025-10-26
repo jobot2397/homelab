@@ -1,0 +1,35 @@
+{
+    admin localhost:2019
+    log {
+        output stdout
+        format console
+        level DEBUG
+    }
+}
+
+# LOCAL ONLY DOMAINS
+jobot-services.local, *.jobot-services.local {
+
+    # NOTE: for each domain create a new record in unifi dns
+    # https://unifi.ui.com/consoles/1C6A1B57FAD90000000008D1C29800000000094A64DD0000000067C9A678:415953882/network/default/settings/policy-table
+    # Create a new CNAME record
+    # NEW DOMAIN NAME
+    # jobot-services.local
+
+    tls internal
+
+    @test host test.jobot-services.local
+    handle @test {
+        reverse_proxy 192.168.100.33:81
+    }
+}
+
+# PUBLIC DOMAINS FROM HEADSCALE
+# PUBLIC DOMAINS FROM HEADSCALE
+:8081 {
+    reverse_proxy http://127.0.0.1:8080
+}
+
+:3002 {
+    reverse_proxy http://127.0.0.1:3001
+}
