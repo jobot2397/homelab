@@ -1,0 +1,47 @@
+---
+name: Creating New VM from Template
+title: Creating New VM from Template
+description: Step-by-step guide for creating and configuring a new VM from a Proxmox template
+slug: creating-new-vm-from-template
+updatedDate: 2025-10-20
+author: Joseph Lawler
+---
+
+Find new vm in unifi dashboard (put link here)
+Give a fixed ip address
+Give a new dns name
+
+Reboot
+
+Create entry to ssh_config
+
+ssh into vm
+
+run updates
+
+Install qemu-guest-agent
+https://pve.proxmox.com/wiki/Qemu-guest-agent
+sudo apt-get install qemu-guest-agent
+
+*Note default password is in bitwarden
+
+Install tailscale
+https://tailscale.com/download
+Login to headscale
+tailscale login --login-server https://headscale.jobot-services.com
+Make this into a guide
+
+Add new beszel system in dashboard, copy the link, then install
+http://go/beszel
+Make this into a guide
+
+Add to uptime
+http://go/uptime
+
+Install docker
+reference docker install guide
+
+Spin up arcane agent
+reference arcane agent install guide
+
+Create zed entry
